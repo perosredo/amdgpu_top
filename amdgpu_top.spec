@@ -3,6 +3,8 @@ Version:        0.10.5
 Release:        1%{?dist}
 Summary:        Tool to displays AMDGPU usage and performance counters
 
+%global debug_package %{nil}
+
 License:        MIT
 URL:            https://github.com/Umio-Yasuno/amdgpu_top
 Source0:        amdgpu_top-%{version}.tar.gz
