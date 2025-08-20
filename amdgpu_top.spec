@@ -5,7 +5,7 @@ Summary:        Tool to displays AMDGPU usage and performance counters
 
 License:        MIT
 URL:            https://github.com/Umio-Yasuno/amdgpu_top
-Source0:        %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
+Source0:        amdgpu_top-%{version}.tar.gz
 
 ExclusiveArch:  x86_64 aarch64
 
@@ -44,7 +44,7 @@ This package contains the TUI-only version of amdgpu_top without GUI
 dependencies, suitable for headless systems and minimal installations.
 
 %prep
-%autosetup -n %{name}-%{version}
+%autosetup
 
 %build
 # Build full version with all features
