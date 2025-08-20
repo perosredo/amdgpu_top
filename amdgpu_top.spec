@@ -49,15 +49,8 @@ dependencies, suitable for headless systems and minimal installations.
 %autosetup
 
 %build
-# Build full version with all features
-cargo build --release --locked
-
-# Build TUI-only version
-cargo build --release --locked --no-default-features --features="tui,json" --bin amdgpu_top
-mv target/release/amdgpu_top target/release/amdgpu_top-tui
-
-# Rebuild full version
-cargo build --release --locked
+# Build with package features (no git_version)
+cargo build --release --locked --no-default-features --features="package"
 
 %install
 # Install main binary
