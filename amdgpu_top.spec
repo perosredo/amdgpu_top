@@ -1,18 +1,24 @@
 Name:           amdgpu_top
 Version:        0.10.5
-Release:        1%{?dist}
+Release:        4%{?dist}
 Summary:        Tool to displays AMDGPU usage and performance counters
 
 %global debug_package %{nil}
 
 License:        MIT
 URL:            https://github.com/Umio-Yasuno/amdgpu_top
-Source0:        amdgpu_top-%{version}.tar.gz
+Source0:        https://github.com/perosredo/amdgpu_top/archive/refs/tags/v%{version}.tar.gz
 
 ExclusiveArch:  x86_64 aarch64
 
+%if 0%{?fedora}
 BuildRequires:  rust >= 1.70
 BuildRequires:  cargo
+%endif
+%if 0%{?epel}
+BuildRequires:  rust >= 1.70
+BuildRequires:  cargo
+%endif
 BuildRequires:  libdrm-devel >= 2.4.110
 BuildRequires:  pkgconfig(libdrm)
 BuildRequires:  pkgconfig(libdrm_amdgpu)
@@ -21,7 +27,6 @@ BuildRequires:  clang
 
 # Runtime dependencies
 Requires:       libdrm >= 2.4.110
-Requires:       libdrm-amdgpu
 
 %description
 amdgpu_top is a tool that displays AMD GPU utilization, similar to nvidia-smi
@@ -37,28 +42,16 @@ Features:
 - Performance counter access
 - GPU metrics and sensor data
 
-%package tui
-Summary:        TUI-only version of amdgpu_top (without GUI)
-Requires:       libdrm >= 2.4.110
-Requires:       libdrm-amdgpu
-
-%description tui
-This package contains the TUI-only version of amdgpu_top without GUI 
-dependencies, suitable for headless systems and minimal installations.
-
 %prep
 %autosetup
 
 %build
-# Build with libdrm_link feature for proper linking
+# Build with all features enabled
 cargo build --release --locked --no-default-features --features="libdrm_link,tui,gui,json"
 
 %install
 # Install main binary
 install -Dm755 target/release/amdgpu_top %{buildroot}%{_bindir}/amdgpu_top
-
-# Install TUI-only binary
-install -Dm755 target/release/amdgpu_top-tui %{buildroot}%{_bindir}/amdgpu_top-tui
 
 # Install desktop files
 install -Dm644 assets/amdgpu_top.desktop %{buildroot}%{_datadir}/applications/amdgpu_top.desktop
@@ -77,17 +70,19 @@ fi
 %doc README.md AUTHORS
 %{_bindir}/amdgpu_top
 %{_datadir}/applications/amdgpu_top.desktop
+%{_datadir}/applications/amdgpu_top-tui.desktop
 %{_datadir}/metainfo/io.github.umio_yasuno.amdgpu_top.metainfo.xml
 %{_mandir}/man1/amdgpu_top.1*
 
-%files tui
-%license LICENSE
-%doc README.md AUTHORS
-%{_bindir}/amdgpu_top-tui
-%{_datadir}/applications/amdgpu_top-tui.desktop
-
 %changelog
-* Mon Aug 19 2025 Petar Petrov <petar@example.com> - 0.10.5-1
+* Tue Aug 20 2024 ps <ps@nunya> - 0.10.5-3
+- Remove libdrm-amdgpu from Requires as it doesn't exist as separate package
+- libdrm_amdgpu.so is provided by main libdrm package
+
+* Tue Aug 20 2024 ps <ps@nunya> - 0.10.5-2
+- Fixed build by removing non-existent amdgpu_top-tui binary and subpackage
+- The upstream project builds a single binary with all features integrated
+
+* Mon Aug 19 2024 ps <ps@nunya> - 0.10.5-1
 - Initial COPR package for Fedora 42 and EPEL
-- Added TUI-only subpackage for minimal installations
 - Support for x86_64 and aarch64 architectures
