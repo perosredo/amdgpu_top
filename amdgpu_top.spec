@@ -17,6 +17,7 @@ BuildRequires:  libdrm-devel >= 2.4.110
 BuildRequires:  pkgconfig(libdrm)
 BuildRequires:  pkgconfig(libdrm_amdgpu)
 BuildRequires:  gcc
+BuildRequires:  clang
 
 # Runtime dependencies
 Requires:       libdrm >= 2.4.110
@@ -49,8 +50,8 @@ dependencies, suitable for headless systems and minimal installations.
 %autosetup
 
 %build
-# Build with package features (no git_version)
-cargo build --release --locked --no-default-features --features="package"
+# Build with libdrm_link feature for proper linking
+cargo build --release --locked --no-default-features --features="libdrm_link,tui,gui,json"
 
 %install
 # Install main binary
